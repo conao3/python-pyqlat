@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from graphql import graphql_sync
 from graphql import GraphQLField
 from graphql import GraphQLObjectType
 from graphql import GraphQLSchema
@@ -14,3 +15,8 @@ schema = GraphQLSchema(
         },
     ),
 )
+
+
+query = "{ hello }"
+
+print(graphql_sync(schema, query))
