@@ -19,4 +19,5 @@ schema = GraphQLSchema(
 
 query = "{ hello }"
 
+# expect: ExecutionResult(data={'hello': 'world'}, errors=None)
 print(graphql_sync(schema, query))
