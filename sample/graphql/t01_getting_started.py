@@ -16,8 +16,8 @@ schema = GraphQLSchema(
     ),
 )
 
+if __name__ == "__main__":
+    query = "{ hello }"
 
-query = "{ hello }"
-
-# expect: ExecutionResult(data={'hello': 'world'}, errors=None)
-print(graphql_sync(schema, query))
+    # expect: ExecutionResult(data={'hello': 'world'}, errors=None)
+    print(graphql_sync(schema, query))

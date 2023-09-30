@@ -279,96 +279,97 @@ query_type = GraphQLObjectType(
 
 schema = GraphQLSchema(query_type)
 
-# type Query {
-#   hero(
-#     """
-#     If omitted, returns the hero of the whole saga. If provided, returns the hero of that particular episode.
-#     """
-#     episode: Episode
-#   ): Character
-#   human(
-#     """id of the human"""
-#     id: String!
-#   ): Human
-#   droid(
-#     """id of the droid"""
-#     id: String!
-#   ): Droid
-# }
-#
-# """A character in the Star Wars Trilogy"""
-# interface Character {
-#   """The id of the character."""
-#   id: String!
-#
-#   """The name of the character."""
-#   name: String
-#
-#   """The friends of the character, or an empty list if they have none."""
-#   friends: [Character]
-#
-#   """Which movies they appear in."""
-#   appearsIn: [Episode]
-#
-#   """All secrets about their past."""
-#   secretBackstory: String
-# }
-#
-# """One of the films in the Star Wars Trilogy"""
-# enum Episode {
-#   NEWHOPE
-#   EMPIRE
-#   JEDI
-# }
-#
-# """A humanoid creature in the Star Wars universe."""
-# type Human implements Character {
-#   """The id of the human."""
-#   id: String!
-#
-#   """The name of the human."""
-#   name: String
-#
-#   """The friends of the human, or an empty list if they have none."""
-#   friends: [Character]
-#
-#   """Which movies they appear in."""
-#   appearsIn: [Episode]
-#
-#   """The home planet of the human, or null if unknown."""
-#   homePlanet: String
-#
-#   """Where are they from and how they came to be who they are."""
-#   secretBackstory: String
-# }
-#
-# """A mechanical creature in the Star Wars universe."""
-# type Droid implements Character {
-#   """The id of the droid."""
-#   id: String!
-#
-#   """The name of the droid."""
-#   name: String
-#
-#   """The friends of the droid, or an empty list if they have none."""
-#   friends: [Character]
-#
-#   """Which movies they appear in."""
-#   appearsIn: [Episode]
-#
-#   """Construction date and the name of the designer."""
-#   secretBackstory: String
-#
-#   """The primary function of the droid."""
-#   primaryFunction: String
-# }
-print(graphql.print_schema(schema))
 
+if __name__ == "__main__":
+    # type Query {
+    #   hero(
+    #     """
+    #     If omitted, returns the hero of the whole saga. If provided, returns the hero of that particular episode.
+    #     """
+    #     episode: Episode
+    #   ): Character
+    #   human(
+    #     """id of the human"""
+    #     id: String!
+    #   ): Human
+    #   droid(
+    #     """id of the droid"""
+    #     id: String!
+    #   ): Droid
+    # }
+    #
+    # """A character in the Star Wars Trilogy"""
+    # interface Character {
+    #   """The id of the character."""
+    #   id: String!
+    #
+    #   """The name of the character."""
+    #   name: String
+    #
+    #   """The friends of the character, or an empty list if they have none."""
+    #   friends: [Character]
+    #
+    #   """Which movies they appear in."""
+    #   appearsIn: [Episode]
+    #
+    #   """All secrets about their past."""
+    #   secretBackstory: String
+    # }
+    #
+    # """One of the films in the Star Wars Trilogy"""
+    # enum Episode {
+    #   NEWHOPE
+    #   EMPIRE
+    #   JEDI
+    # }
+    #
+    # """A humanoid creature in the Star Wars universe."""
+    # type Human implements Character {
+    #   """The id of the human."""
+    #   id: String!
+    #
+    #   """The name of the human."""
+    #   name: String
+    #
+    #   """The friends of the human, or an empty list if they have none."""
+    #   friends: [Character]
+    #
+    #   """Which movies they appear in."""
+    #   appearsIn: [Episode]
+    #
+    #   """The home planet of the human, or null if unknown."""
+    #   homePlanet: String
+    #
+    #   """Where are they from and how they came to be who they are."""
+    #   secretBackstory: String
+    # }
+    #
+    # """A mechanical creature in the Star Wars universe."""
+    # type Droid implements Character {
+    #   """The id of the droid."""
+    #   id: String!
+    #
+    #   """The name of the droid."""
+    #   name: String
+    #
+    #   """The friends of the droid, or an empty list if they have none."""
+    #   friends: [Character]
+    #
+    #   """Which movies they appear in."""
+    #   appearsIn: [Episode]
+    #
+    #   """Construction date and the name of the designer."""
+    #   secretBackstory: String
+    #
+    #   """The primary function of the droid."""
+    #   primaryFunction: String
+    # }
+    print(graphql.print_schema(schema))
 
-async def query_artoo():
-    result = await graphql.graphql(
-        schema,
-        """\
+    async def query_artoo():
+        result = await graphql.graphql(
+            schema,
+            """\
 {
   droid(id: "2001") {
     name
@@ -376,17 +377,15 @@ async def query_artoo():
   }
 }
 """,
-    )
-    print(result)
+        )
+        print(result)
 
+    # expect: ExecutionResult(data={'droid': {'name': 'R2-D2', 'primaryFunction': 'Astromech'}}, errors=None)
+    asyncio.run(query_artoo())
 
-# expect: ExecutionResult(data={'droid': {'name': 'R2-D2', 'primaryFunction': 'Astromech'}}, errors=None)
-asyncio.run(query_artoo())
-
-
-result = graphql.graphql_sync(
-    schema,
-    """\
+    result = graphql.graphql_sync(
+        schema,
+        """\
 query FetchHuman($id: String!) {
   human(id: $id) {
     name
@@ -394,16 +393,15 @@ query FetchHuman($id: String!) {
   }
 }
 """,
-    variable_values={"id": "1000"},
-)
+        variable_values={"id": "1000"},
+    )
 
-# expect: ExecutionResult(data={'human': {'name': 'Luke Skywalker', 'homePlanet': 'Tatooine'}}, errors=None)
-print(result)
+    # expect: ExecutionResult(data={'human': {'name': 'Luke Skywalker', 'homePlanet': 'Tatooine'}}, errors=None)
+    print(result)
 
-
-result = graphql.graphql_sync(
-    schema,
-    """\
+    result = graphql.graphql_sync(
+        schema,
+        """\
 {
   human(id: "1000") {
     name
@@ -411,12 +409,12 @@ result = graphql.graphql_sync(
   }
 }
 """,
-)
+    )
 
-# expect: ExecutionResult(
-#     data=None,
-#     errors=[
-#         GraphQLError("Cannot query field 'homePlace' on type 'Human'. Did you mean 'homePlanet'?", locations=[SourceLocation(line=5, column=9)])
-#     ]
-# )
-print(result)
+    # expect: ExecutionResult(
+    #     data=None,
+    #     errors=[
+    #         GraphQLError("Cannot query field 'homePlace' on type 'Human'. Did you mean 'homePlanet'?", locations=[SourceLocation(line=5, column=9)])
+    #     ]
+    # )
+    print(result)
