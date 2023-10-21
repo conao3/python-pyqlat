@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import pyqlat
+import qlot
 
 
-qlat = pyqlat.PyQlat()
+qlot_app = qlot.Qlot()
 
 
 def hello() -> str:
