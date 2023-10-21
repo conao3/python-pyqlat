@@ -12,7 +12,5 @@ def hello() -> str:
 
 
 if __name__ == "__main__":
-    query = "{ hello }"
-
     # expect: ExecutionResult(data={'hello': 'world'}, errors=None)
-    print(qlot_app.execute(query))
+    print(qlot_app.execute("{ hello }"))
