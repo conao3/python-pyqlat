@@ -7,6 +7,7 @@ from typing import Any
 from typing import TypeAlias
 
 import graphql
+import pydantic
 
 
 GraphQLInputType: TypeAlias = (
@@ -25,53 +26,67 @@ GraphQLOutputType: TypeAlias = (
     | graphql.GraphQLWrappingType[Any]
 )
 
+GraphQLNullableType: TypeAlias = (
+    graphql.GraphQLScalarType
+    | graphql.GraphQLObjectType
+    | graphql.GraphQLInterfaceType
+    | graphql.GraphQLUnionType
+    | graphql.GraphQLEnumType
+    | graphql.GraphQLInputObjectType
+    | graphql.GraphQLList[Any]
+)
+
 
 class TypeConverter:
     def __init__(self) -> None:
         self.input_rules: dict[
             str,
-            tuple[Callable[[type], bool], GraphQLInputType],
+            Callable[[type], GraphQLInputType | None],
         ] = {}
         self.output_rules: dict[
             str,
-            tuple[Callable[[type], bool], GraphQLOutputType],
+            Callable[[type], GraphQLOutputType | None],
         ] = {}
 
-    def input_type_rule(
-        self,
-        name: str,
-        type_: GraphQLInputType,
-    ) -> Callable[[Callable[[type], bool]], Callable[[type], bool]]:
-        def _wrapper(func: Callable[[type], bool]) -> Callable[[type], bool]:
-            self.input_rules[name] = (func, type_)
+    def input_type_rule[
+        R: GraphQLInputType | None,
+    ](self, name: str) -> Callable[[Callable[[type], R]], Callable[[type], R]]:
+        def _wrapper(func: Callable[[type], R]) -> Callable[[type], R]:
+            self.input_rules[name] = func
             return func
 
         return _wrapper
 
-    def output_type_rule(
-        self,
-        name: str,
-        type_: GraphQLOutputType,
-    ) -> Callable[[Callable[[type], bool]], Callable[[type], bool]]:
-        def _wrapper(func: Callable[[type], bool]) -> Callable[[type], bool]:
-            self.output_rules[name] = (func, type_)
+    def output_type_rule[
+        R: GraphQLOutputType | None,
+    ](self, name: str) -> Callable[[Callable[[type], R]], Callable[[type], R]]:
+        def _wrapper(func: Callable[[type], R]) -> Callable[[type], R]:
+            self.output_rules[name] = func
             return func
 
         return _wrapper
 
     def convert_input_type(self, type_: type) -> GraphQLInputType:
+        type_, nonnull = peel_nonnull(type_)
+
         # priority: last added rule -> first added rule
-        for func, ret_type in reversed(self.input_rules.values()):
-            if func(type_):
-                return ret_type
+        for func in reversed(self.input_rules.values()):
+            if ret := func(type_):
+                if nonnull:
+                    return graphql.GraphQLNonNull(ret)
+                return ret
 
         raise TypeError(f"Cannot convert {type_} to GraphQL type")
 
     def convert_output_type(self, type_: type) -> GraphQLOutputType:
+        type_, nonnull = peel_nonnull(type_)
+
         # priority: last added rule -> first added rule
-        for func, ret_type in reversed(self.output_rules.values()):
-            if func(type_):
-                return ret_type
+        for func in reversed(self.output_rules.values()):
+            if ret := func(type_):
+                # if nonnull:
+                #     return graphql.GraphQLNonNull(ret)
+                return ret
 
         raise TypeError(f"Cannot convert {type_} to GraphQL type")
 
@@ -79,28 +94,70 @@ class TypeConverter:
 type_converter = TypeConverter()
 
 
-@type_converter.input_type_rule("str", graphql.GraphQLString)
-@type_converter.output_type_rule("str", graphql.GraphQLString)
-def is_str(type_: type) -> bool:
-    return issubclass(type_, str)
+@type_converter.input_type_rule("str")
+@type_converter.output_type_rule("str")
+def is_str(type_: type) -> graphql.GraphQLScalarType | None:
+    if issubclass(type_, str):
+        return graphql.GraphQLString
 
 
-@type_converter.input_type_rule("int", graphql.GraphQLInt)
-@type_converter.output_type_rule("int", graphql.GraphQLInt)
-def is_int(type_: type) -> bool:
-    return issubclass(type_, int)
+@type_converter.input_type_rule("int")
+@type_converter.output_type_rule("int")
+def is_int(type_: type) -> graphql.GraphQLScalarType | None:
+    if issubclass(type_, int):
+        return graphql.GraphQLInt
 
 
-@type_converter.input_type_rule("float", graphql.GraphQLFloat)
-@type_converter.output_type_rule("float", graphql.GraphQLFloat)
-def is_float(type_: type) -> bool:
-    return issubclass(type_, float)
+@type_converter.input_type_rule("float")
+@type_converter.output_type_rule("float")
+def is_float(type_: type) -> graphql.GraphQLScalarType | None:
+    if issubclass(type_, float):
+        return graphql.GraphQLFloat
 
 
-@type_converter.input_type_rule("bool", graphql.GraphQLBoolean)
-@type_converter.output_type_rule("bool", graphql.GraphQLBoolean)
-def is_bool(type_: type) -> bool:
-    return issubclass(type_, bool)
+@type_converter.input_type_rule("bool")
+@type_converter.output_type_rule("bool")
+def is_bool(type_: type) -> graphql.GraphQLScalarType | None:
+    if issubclass(type_, bool):
+        return graphql.GraphQLBoolean
+
+
+@type_converter.output_type_rule("object")
+def is_object(type_: type) -> graphql.GraphQLObjectType | None:
+    if issubclass(type_, pydantic.BaseModel):
+        fields = {}
+        for name, field_info in type_.model_fields.items():
+            if not field_info.annotation:
+                raise TypeError(f"Field {name} of {type_} has no annotation")
+
+            type_, nonnull = peel_nonnull(field_info.annotation)
+            graphql_type = type_converter.convert_output_type(type_)
+            if nonnull:
+                graphql_type.__required__ = True
+
+            fields[name] = graphql.GraphQLField(type_=graphql_type)
+
+        return graphql.GraphQLObjectType(
+            name=type_.__name__,
+            fields=fields,
+        )
+
+
+def peel_nonnull(type_: type) -> tuple[type, bool]:
+    if typing.get_origin(type_) is typing.Union:
+        type_list = typing.get_args(type_)
+        if len(type_list) > 2:
+            raise TypeError(f"GraphQL does not support Union type {type_}{type_list}")
+
+        if type(None) in type_list:
+            type_a, type_b = type_list
+            if type_a is type(None):
+                inner_type = type_b
+            else:
+                inner_type = type_a
+            return inner_type, False
+
+    return type_, True
 
 
 class Qlot:
