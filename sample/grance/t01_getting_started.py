@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-import qlot
+import grance
 
 
-qlot_app = qlot.Qlot()
+app = grance.Grance()
 
 
-@qlot_app.query("hello")
+@app.query("hello")
 def hello() -> str:
     return "world"
 
 
 if __name__ == "__main__":
     # expect: ExecutionResult(data={'hello': 'world'}, errors=None)
-    print(qlot_app.execute("{ hello }"))
+    print(app.execute("{ hello }"))

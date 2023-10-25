@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "qlot"
+name = "grance"
 version = "0.1.0"
 description = ""
 authors = ["Naoya Yamashita <conao3@gmail.com>"]

@@ -160,7 +160,7 @@ def peel_nonnull(type_: type) -> tuple[type, bool]:
     return type_, True
 
 
-class Qlot:
+class Grance:
     def __init__(self) -> None:
         self._query: dict[str, graphql.GraphQLField] = {}
         self._mutation: dict[str, graphql.GraphQLField] = {}

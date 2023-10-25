@@ -1,27 +1,27 @@
 from __future__ import annotations
 
-import qlot
+import grance
 
 
-qlot_app = qlot.Qlot()
+app = grance.Grance()
 
 
-@qlot_app.query("hello")
+@app.query("hello")
 def hello() -> str:
     return "world"
 
 
-@qlot_app.query("helloArgs")
+@app.query("helloArgs")
 def hello_args(name: str = "stranger") -> str:
     return f"Hello {name}!"
 
 
 if __name__ == "__main__":
     # expect: ExecutionResult(data={'hello': 'world'}, errors=None)
-    print(qlot_app.execute("{ hello }"))
+    print(app.execute("{ hello }"))
 
     # expect: ExecutionResult(data={'helloArgs': 'Hello stranger!'}, errors=None)
-    print(qlot_app.execute("{ helloArgs }"))
+    print(app.execute("{ helloArgs }"))
 
     # expect: ExecutionResult(data={'helloArgs': 'Hello GraphQL!'}, errors=None)
-    print(qlot_app.execute('{ helloArgs(name: "GraphQL") }'))
+    print(app.execute('{ helloArgs(name: "GraphQL") }'))
