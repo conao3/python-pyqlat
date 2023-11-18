@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@adobe/react-spectrum": "^3.32.2",
+    "modern-css-reset": "^1.4.0",
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18"
