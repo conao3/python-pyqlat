@@ -10,13 +10,13 @@ app = grance.Grance()
 
 class BlogImage(pydantic.BaseModel):
     url: str | None
-    # width: int
-    # height: int
+    width: int
+    height: int
 
 
 @app.query("image")
 def image() -> BlogImage:
-    return BlogImage(url="example.com/img/logo.png")  # , width=400, height=200)
+    return BlogImage(url="example.com/img/logo.png", width=400, height=200)
 
 
 if __name__ == "__main__":
