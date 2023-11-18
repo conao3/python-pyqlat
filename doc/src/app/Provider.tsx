@@ -1,6 +1,6 @@
 'use client'
 
-import { Provider as RSProvider, defaultTheme } from "@adobe/react-spectrum"
+import { Provider as RSProvider, darkTheme } from "@adobe/react-spectrum"
 
 interface ProviderProps {
   children: React.ReactNode
@@ -8,7 +8,7 @@ interface ProviderProps {
 
 export function Provider(props: ProviderProps) {
   return (
-    <RSProvider theme={defaultTheme}>
+    <RSProvider theme={darkTheme} colorScheme="dark" scale='medium'>
       {props.children}
     </RSProvider>
   )
