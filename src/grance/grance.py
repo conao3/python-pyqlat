@@ -53,6 +53,9 @@ type GraphQLNullableType[T: graphql.GraphQLType] = (
 )
 
 
+type ReturnType = type | pytypes.GenericAlias
+
+
 class FieldType[T: GraphQLNullableType[graphql.GraphQLType]](pydantic.BaseModel):
     model_config = pydantic.ConfigDict(arbitrary_types_allowed=True)
 
@@ -75,11 +78,11 @@ class FieldType[T: GraphQLNullableType[graphql.GraphQLType]](pydantic.BaseModel)
 
 
 type InputTypeFunction[T: GraphQLNullableType[graphql.GraphQLType]] = Callable[
-    [type],
+    [ReturnType],
     FieldType[T] | None,
 ]
 type OutputTypeFunction[T: GraphQLNullableType[graphql.GraphQLType]] = Callable[
-    [type],
+    [ReturnType],
     FieldType[T] | None,
 ]
 type IdentityFunction[T] = Callable[[T], T]
@@ -108,7 +111,7 @@ class TypeConverter:
 
         return _wrapper
 
-    def convert_input_type(self, type_: type) -> FieldType[GraphQLInputInnerType]:
+    def convert_input_type(self, type_: ReturnType) -> FieldType[GraphQLInputInnerType]:
         type_, nullable = peel_nullable(type_)
 
         # priority: last added rule -> first added rule
@@ -120,7 +123,10 @@ class TypeConverter:
 
         raise TypeError(f"Cannot convert {type_} to GraphQL type")
 
-    def convert_output_type(self, type_: type) -> FieldType[GraphQLOutputInnerType]:
+    def convert_output_type(
+        self,
+        type_: ReturnType,
+    ) -> FieldType[GraphQLOutputInnerType]:
         type_, nullable = peel_nullable(type_)
 
         # priority: last added rule -> first added rule
@@ -138,35 +144,44 @@ type_converter = TypeConverter()
 
 @type_converter.input_type_rule("str")
 @type_converter.output_type_rule("str")
-def is_str(type_: type) -> FieldType[graphql.GraphQLScalarType] | None:
-    if issubclass(type_, str):
+def is_str(type_: ReturnType) -> FieldType[graphql.GraphQLScalarType] | None:
+    if isinstance(type_, type) and issubclass(type_, str):
         return FieldType(type_=graphql.GraphQLString)
 
 
 @type_converter.input_type_rule("int")
 @type_converter.output_type_rule("int")
-def is_int(type_: type) -> FieldType[graphql.GraphQLScalarType] | None:
-    if issubclass(type_, int):
+def is_int(type_: ReturnType) -> FieldType[graphql.GraphQLScalarType] | None:
+    if isinstance(type_, type) and issubclass(type_, int):
         return FieldType(type_=graphql.GraphQLInt)
 
 
 @type_converter.input_type_rule("float")
 @type_converter.output_type_rule("float")
-def is_float(type_: type) -> FieldType[graphql.GraphQLScalarType] | None:
-    if issubclass(type_, float):
+def is_float(type_: ReturnType) -> FieldType[graphql.GraphQLScalarType] | None:
+    if isinstance(type_, type) and issubclass(type_, float):
         return FieldType(type_=graphql.GraphQLFloat)
 
 
 @type_converter.input_type_rule("bool")
 @type_converter.output_type_rule("bool")
-def is_bool(type_: type) -> FieldType[graphql.GraphQLScalarType] | None:
-    if issubclass(type_, bool):
+def is_bool(type_: ReturnType) -> FieldType[graphql.GraphQLScalarType] | None:
+    if isinstance(type_, type) and issubclass(type_, bool):
         return FieldType(type_=graphql.GraphQLBoolean)
 
 
+@type_converter.input_type_rule("list")
+@type_converter.output_type_rule("list")
+def is_list(type_: ReturnType) -> FieldType[graphql.GraphQLList[Any]] | None:
+    if typing.get_origin(type_) is list:
+        type_ = typing.get_args(type_)[0]
+        inner_type = type_converter.convert_input_type(type_).input_type()
+        return FieldType(type_=graphql.GraphQLList(inner_type))
+
+
 @type_converter.output_type_rule("object")
-def is_object(type_: type) -> FieldType[graphql.GraphQLObjectType] | None:
-    if issubclass(type_, pydantic.BaseModel):
+def is_object(type_: ReturnType) -> FieldType[graphql.GraphQLObjectType] | None:
+    if isinstance(type_, type) and issubclass(type_, pydantic.BaseModel):
         fields = {}
         for name, field_info in type_.model_fields.items():
             if not field_info.annotation:
@@ -184,7 +199,7 @@ def is_object(type_: type) -> FieldType[graphql.GraphQLObjectType] | None:
         )
 
 
-def peel_nullable(type_: type) -> tuple[type, bool]:
+def peel_nullable(type_: ReturnType) -> tuple[ReturnType, bool]:
     if typing.get_origin(type_) in (typing.Union, pytypes.UnionType):
         type_list = typing.get_args(type_)
         if len(type_list) > 2:
