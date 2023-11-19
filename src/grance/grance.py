@@ -217,13 +217,26 @@ def peel_nullable(type_: ReturnType) -> tuple[ReturnType, bool]:
 
 
 class Grance:
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        field_name_converter: Callable[[str], str]
+        | None = pydantic.alias_generators.to_camel,
+        arg_name_converter: Callable[[str], str]
+        | None = pydantic.alias_generators.to_snake,
+    ) -> None:
+        self.field_name_converter: Callable[[str], str] = (
+            field_name_converter if field_name_converter is not None else lambda x: x
+        )
+        self.arg_name_converter: Callable[[str], str] = (
+            arg_name_converter if arg_name_converter is not None else lambda x: x
+        )
+
         self._query: dict[str, graphql.GraphQLField] = {}
         self._mutation: dict[str, graphql.GraphQLField] = {}
         self._subscription: dict[str, graphql.GraphQLField] = {}
 
     def query[**P, R](self, name_: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
-        name = pydantic.alias_generators.to_camel(name_)
+        name = self.field_name_converter(name_)
 
         def _query(func: Callable[P, R]) -> Callable[P, R]:
             resolver_signature = inspect.signature(func)
@@ -232,7 +245,7 @@ class Grance:
                 resolver_types.pop("return"),
             )
             resolver_args = {
-                name: graphql.GraphQLArgument(
+                self.field_name_converter(name): graphql.GraphQLArgument(
                     type_=type_converter.convert_input_type(type_).input_type(),
                     default_value=resolver_signature.parameters[name].default,
                 )
@@ -243,16 +256,18 @@ class Grance:
                 obj: Any,
                 info: graphql.GraphQLResolveInfo,
                 *args: P.args,
-                **kwargs: P.kwargs,
+                **kwargs_: P.kwargs,
             ) -> R:
-                sys_args: dict[str, Any] = {}
-                if "obj" in resolver_types:
-                    sys_args["obj"] = obj
+                kwargs: dict[str, Any] = (
+                    {
+                        self.arg_name_converter(name): value
+                        for name, value in kwargs_.items()
+                    }
+                    | ({"obj": obj} if "obj" in resolver_types else {})
+                    | ({"info": info} if "info" in resolver_types else {})
+                )
 
-                if "info" in resolver_types:
-                    sys_args["info"] = info
-
-                return func(*args, **kwargs, **sys_args)
+                return func(*args, **kwargs)
 
             self._query[name] = graphql.GraphQLField(
                 type_=resolver_return_type.output_type(),
