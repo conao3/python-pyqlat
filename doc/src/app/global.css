@@ -7,3 +7,13 @@ h1, h2, h3, h4, h5, h6 {
 :root {
   --scrollbar: 0px;
 }
+
+.remark-highlight-code-line {
+  background-color: var(--spectrum-blue-200);
+  display: block;
+  margin-right: -1em;
+  margin-left: -1em;
+  padding-right: 1em;
+  padding-left: 0.75em;
+  border-left: 0.25em solid var(--spectrum-blue-700);
+}

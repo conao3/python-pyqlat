@@ -1,8 +1,6 @@
-const withMDX = require('@next/mdx')()
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  reactStrictMode: true,
   output: 'export',
   transpilePackages: [
     '@adobe/react-spectrum',
@@ -58,7 +56,31 @@ const nextConfig = {
     '@spectrum-icons/illustrations',
     '@spectrum-icons/ui',
     '@spectrum-icons/workflow'
-  ]
+  ],
 }
 
-module.exports = withMDX(nextConfig)
+import mdx from '@next/mdx';
+import remarkPrism from 'remark-prism';
+import remarkGfm from 'remark-gfm';
+
+const withMDX = mdx({
+  options: {
+    remarkPlugins: [
+      remarkGfm,
+      [remarkPrism, {plugins: [
+        'autolinker',
+        'command-line',
+        'data-uri-highlight',
+        'diff-highlight',
+        'inline-color',
+        'keep-markup',
+        'line-numbers',
+        'show-invisibles',
+        'treeview',
+      ]}],
+    ],
+    rehypePlugins: [],
+  }
+})
+
+export default withMDX(nextConfig)

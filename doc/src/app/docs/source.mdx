@@ -1,0 +1,77 @@
+# Welcome to my MDX page!
+
+This is some **bold** and _italics_ text.
+
+This is a list in markdown:
+
+- One
+- Two
+- Three
+
+Checkout my React component:
+
+### Tasklist
+
+- [ ] to do
+- [x] done
+
+```html{2}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+  </body>
+</html>
+```
+
+```python[legend="file.html"][class="line-numbers"]{1,3-4,8}
+from __future__ import annotations
+# https://github.com/GranceJiao/grance
+
+import grance
+
+
++app = grance.Grance()
+
+
+@app.query("hello")
+def hello() -> str:
+    return "world"
+
+
+if __name__ == "__main__":
+    # expect: ExecutionResult(data={'hello': 'world'}, errors=None)
+    print(app.execute("{ hello }"))
+```
+
+```treeview
+.
+├── .eslintignore
+├── .eslintrc
+├── .gitignore
+├── .prettierignore
+├── .prettierrc
+├── .yarnrc.yml
+├── README.md
+├── index.js
+├── package.json
+├── test/
+│   ├── fixtures/
+│   └── index.js
+└── yarn.lock
+
+7 directories, 41 files
+```
+
+```diff-javascript[class="diff-highlight"]
+@@ -4,6 +4,5 @@
+-  let foo = bar.baz([1, 2, 3]);
+-  foo = foo + 1;
++  const foo = bar.baz([1, 2, 3]) + 1;
+   console.log(`foo: ${foo}`);
+```
