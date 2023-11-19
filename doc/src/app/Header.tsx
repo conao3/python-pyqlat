@@ -1,14 +1,19 @@
 import { Flex, View } from "@adobe/react-spectrum";
+import Link from "next/link";
 
 export function Header() {
   return (
     <Flex gap="size-200" minHeight="size-600">
-      <View>
-        Header1
-      </View>
-      <View>
-        Header2
-      </View>
+      <Link href="/">
+        <View>
+          Grance
+        </View>
+      </Link>
+      <Link href="/docs">
+        <View>
+          docs
+        </View>
+      </Link>
     </Flex>
   )
 }
