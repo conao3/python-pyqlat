@@ -7,7 +7,7 @@ from collections.abc import Callable
 from typing import Any
 
 import graphql
-import pydantic
+import pydantic.alias_generators
 
 
 type GraphQLInputType[T: graphql.GraphQLType] = (
@@ -207,7 +207,9 @@ class Grance:
         self._mutation: dict[str, graphql.GraphQLField] = {}
         self._subscription: dict[str, graphql.GraphQLField] = {}
 
-    def query[**P, R](self, name: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def query[**P, R](self, name_: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
+        name = pydantic.alias_generators.to_camel(name_)
+
         def _query(func: Callable[P, R]) -> Callable[P, R]:
             resolver_signature = inspect.signature(func)
             resolver_types = typing.get_type_hints(func)
@@ -246,7 +248,10 @@ class Grance:
 
         return _query
 
-    def mutation[**P, R](self, name: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    def mutation[
+        **P,
+        R,
+    ](self, name: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def _mutation(func: Callable[P, R]) -> Callable[P, R]:
             def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
                 return func(*args, **kwargs)
