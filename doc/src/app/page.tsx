@@ -8,6 +8,18 @@ import { Open_Sans } from 'next/font/google'
 const open_sans = Open_Sans({weight: "300", subsets: ['latin']})
 
 export default function Home() {
+  const sample_code = `\
+import grance
+
+app = grance.Grance()
+
+@app.query("hello")
+def hello() -> str:
+    return "world"
+
+print(app.execute("{ hello }"))
+`
+
   return (
     <Flex direction="column" minHeight="100vh" gap="size-500">
       <Highlight>
@@ -39,16 +51,16 @@ export default function Home() {
           </Flex>
         </Flex>
       </Highlight>
-      <Flex direction="column" maxWidth="1200px" margin="0 auto">
+      <Flex direction="column" width="100%" maxWidth="1200px" margin="0 auto">
         <Grid
-          columns={['1fr', '3fr']}
+          columns={['1fr', '1fr']}
           width="100%"
         >
           <View>
-            a
+            <Heading level={2}>Straightfoward to <strong>Define</strong> GraphQL field</Heading>
           </View>
           <View>
-            b
+            <pre>{sample_code}</pre>
           </View>
         </Grid>
       </Flex>
