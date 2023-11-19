@@ -22,7 +22,8 @@ export function Highlight(props: HighlightProps) {
           ].join(' ')
         ),
         height: '30rem',
-        width: '100%',
+        width: 'calc(100vw - var(--scrollbar))',
+        marginLeft: 'calc(50% - (100vw - var(--scrollbar)) / 2)',
       }}
     >
       {props.children}

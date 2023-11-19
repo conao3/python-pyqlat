@@ -21,16 +21,11 @@ print(app.execute("{ hello }"))
 `
 
   return (
-    <Flex direction="column" minHeight="100vh" gap="size-500">
-      <Highlight>
-        <Flex direction="column" maxWidth="1200px" margin="0 auto" height="100%">
-          <div style={{position: 'relative'}}>
-            <div style={{position: 'absolute'}}>
-              <Header />
-            </div>
-          </div>
+    <Flex direction="column" maxWidth="1200px" margin="0 auto" height="100%" gap="size-500">
+      <View>
+        <Highlight>
           <Flex direction="column" justifyContent="center" alignItems="center" flexGrow={1}>
-            <View height="5rem"></View>
+            <View height="7rem"></View>
             <Flex direction="row" justifyContent="center" alignItems="center" gap="size-1000">
               <View>
                 <Heading level={1} UNSAFE_style={{fontSize: "5rem"}}>
@@ -49,21 +44,19 @@ print(app.execute("{ hello }"))
             </Flex>
             <pre style={{marginTop: "2rem", fontSize: "1.5rem"}}>pip install grance</pre>
           </Flex>
-        </Flex>
-      </Highlight>
-      <Flex direction="column" width="100%" maxWidth="1200px" margin="0 auto">
-        <Grid
-          columns={['1fr', '1fr']}
-          width="100%"
-        >
-          <View>
-            <Heading level={2}>Straightfoward to <strong>Define</strong> GraphQL field</Heading>
-          </View>
-          <View>
-            <pre>{sample_code}</pre>
-          </View>
-        </Grid>
-      </Flex>
+        </Highlight>
+      </View>
+      <Grid
+        columns={['1fr', '1fr']}
+        width="100%"
+      >
+        <View>
+          <Heading level={2}>Straightfoward to <strong>Define</strong> GraphQL field</Heading>
+        </View>
+        <View>
+          <pre>{sample_code}</pre>
+        </View>
+      </Grid>
     </Flex>
   )
 }
