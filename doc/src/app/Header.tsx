@@ -2,7 +2,7 @@ import { Flex, View } from "@adobe/react-spectrum";
 
 export function Header() {
   return (
-    <Flex gap="size-200" minHeight="size-600">
+    <Flex gap="size-200" minHeight="size-600" marginTop="size-200">
       <View>
         Header1
       </View>
