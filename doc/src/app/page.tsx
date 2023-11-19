@@ -9,7 +9,7 @@ const open_sans = Open_Sans({weight: "300", subsets: ['latin']})
 
 export default function Home() {
   return (
-    <View minHeight="100vh">
+    <Flex direction="column" minHeight="100vh">
       <Highlight>
         <Flex direction="column" maxWidth="1200px" margin="0 auto" height="100%">
           <div style={{position: 'relative'}}>
@@ -35,6 +35,9 @@ export default function Home() {
           </Flex>
         </Flex>
       </Highlight>
-    </View>
+      <Flex direction="column" maxWidth="1200px" margin="0 auto">
+        a
+      </Flex>
+    </Flex>
   )
 }
