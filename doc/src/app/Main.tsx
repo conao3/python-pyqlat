@@ -17,10 +17,8 @@ export function Main(props: MainProps) {
 
   return (
     <Provider>
-      <View minHeight="100vh">
-        <View maxWidth="1200px" margin="0 auto">
-          <Header />
-        </View>
+      <View minHeight="100vh" maxWidth="1200px" margin="0 auto">
+        <Header />
         {props.children}
       </View>
     </Provider>

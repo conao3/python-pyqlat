@@ -1,7 +1,6 @@
 'use client'
 
-import { Flex, Heading, View, Text, Grid } from "@adobe/react-spectrum";
-import { Header } from "./Header";
+import { Flex, Heading, View, Grid } from "@adobe/react-spectrum";
 import { Highlight } from "./Highlight";
 import { Open_Sans } from 'next/font/google'
 
@@ -21,7 +20,7 @@ print(app.execute("{ hello }"))
 `
 
   return (
-    <Flex direction="column" maxWidth="1200px" margin="0 auto" height="100%" gap="size-500">
+    <Flex direction="column" gap="size-500">
       <View>
         <Highlight>
           <Flex direction="column" justifyContent="center" alignItems="center" flexGrow={1}>
