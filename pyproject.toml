@@ -16,6 +16,8 @@ pre-commit = "^3.4.0"
 graphene = "^3.3"
 pytest = "^7.4.3"
 pytest-icdiff = "^0.8"
+fastapi = "^0.104.1"
+httpx = "^0.25.1"
 
 [build-system]
 requires = ["poetry-core"]
