@@ -17,26 +17,34 @@ export default function Home() {
               <Header />
             </div>
           </div>
-          <Flex justifyContent="center" alignItems="center" flexGrow={1} gap="size-1000">
-            <View>
-              <Heading level={1} UNSAFE_style={{fontSize: "5rem"}}>
-                <div className={open_sans.className}>Grance</div>
-              </Heading>
-            </View>
-            <View>
-              <Heading level={2} UNSAFE_style={{fontSize: "3rem"}}>
-                <div className={open_sans.className}>
-                  A Brand<br />
-                  New GraphQL Library<br />
-                  Based on Pydantic
-                </div>
-              </Heading>
-            </View>
+          <Flex direction="column" justifyContent="center" alignItems="center" flexGrow={1}>
+            <View height="5rem"></View>
+            <Flex direction="row" justifyContent="center" alignItems="center" gap="size-1000">
+              <View>
+                <Heading level={1} UNSAFE_style={{fontSize: "5rem"}}>
+                  <div className={open_sans.className}>Grance</div>
+                </Heading>
+              </View>
+              <View>
+                <Heading level={2} UNSAFE_style={{fontSize: "3rem"}}>
+                  <div className={open_sans.className}>
+                    A Brand<br />
+                    New GraphQL Library<br />
+                    Based on Pydantic
+                  </div>
+                </Heading>
+              </View>
+            </Flex>
+            <pre style={{marginTop: "2rem", fontSize: "1.5rem"}}>pip install grance</pre>
           </Flex>
         </Flex>
       </Highlight>
       <Flex direction="column" maxWidth="1200px" margin="0 auto">
-        a
+        <View>
+          <Heading level={3}>
+            Grance
+          </Heading>
+        </View>
       </Flex>
     </Flex>
   )
