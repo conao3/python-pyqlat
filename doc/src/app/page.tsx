@@ -1,6 +1,6 @@
 'use client'
 
-import { Flex, Heading, View, Text } from "@adobe/react-spectrum";
+import { Flex, Heading, View, Text, Grid } from "@adobe/react-spectrum";
 import { Header } from "./Header";
 import { Highlight } from "./Highlight";
 import { Open_Sans } from 'next/font/google'
@@ -9,7 +9,7 @@ const open_sans = Open_Sans({weight: "300", subsets: ['latin']})
 
 export default function Home() {
   return (
-    <Flex direction="column" minHeight="100vh">
+    <Flex direction="column" minHeight="100vh" gap="size-500">
       <Highlight>
         <Flex direction="column" maxWidth="1200px" margin="0 auto" height="100%">
           <div style={{position: 'relative'}}>
@@ -40,11 +40,17 @@ export default function Home() {
         </Flex>
       </Highlight>
       <Flex direction="column" maxWidth="1200px" margin="0 auto">
-        <View>
-          <Heading level={3}>
-            Grance
-          </Heading>
-        </View>
+        <Grid
+          columns={['1fr', '3fr']}
+          width="100%"
+        >
+          <View>
+            a
+          </View>
+          <View>
+            b
+          </View>
+        </Grid>
       </Flex>
     </Flex>
   )
