@@ -16,7 +16,7 @@ pre-commit = "^3.4.0"
 graphene = "^3.3"
 pytest = "^7.4.3"
 pytest-icdiff = "^0.8"
-fastapi = "^0.104.1"
+fastapi = ">=0.104.1,<0.110.0"
 httpx = "^0.25.1"
 pytest-mock = "^3.12.0"
 
