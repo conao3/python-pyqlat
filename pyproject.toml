@@ -12,13 +12,13 @@ graphql-core = "^3.2.3"
 pydantic = "^2.4.2"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.4.0"
-graphene = "^3.3"
-pytest = "^7.4.3"
-pytest-icdiff = "^0.8"
-fastapi = "^0.104.1"
-httpx = "^0.25.1"
-pytest-mock = "^3.12.0"
+pre-commit = "^4.7.0"
+graphene = "^3.4.3"
+pytest = "^9.1.1"
+pytest-icdiff = "^0.9"
+fastapi = "^0.162.0"
+httpx = "^0.28.1"
+pytest-mock = "^3.17.0"
 
 [build-system]
 requires = ["poetry-core"]
