@@ -9,7 +9,6 @@ from typing import Any
 import graphql
 import pydantic.alias_generators
 
-
 type GraphQLInputType[T: graphql.GraphQLType] = (
     graphql.GraphQLScalarType
     | graphql.GraphQLEnumType
@@ -95,7 +94,10 @@ class TypeConverter:
 
     def input_type_rule[
         T: GraphQLNullableType[graphql.GraphQLType],
-    ](self, name: str) -> IdentityFunction[InputTypeFunction[T]]:
+    ](
+        self,
+        name: str,
+    ) -> IdentityFunction[InputTypeFunction[T]]:
         def _wrapper(func: InputTypeFunction[T]) -> InputTypeFunction[T]:
             self.input_rules[name] = func
             return func
@@ -104,7 +106,10 @@ class TypeConverter:
 
     def output_type_rule[
         T: GraphQLNullableType[graphql.GraphQLType],
-    ](self, name: str) -> IdentityFunction[OutputTypeFunction[T]]:
+    ](
+        self,
+        name: str,
+    ) -> IdentityFunction[OutputTypeFunction[T]]:
         def _wrapper(func: OutputTypeFunction[T]) -> OutputTypeFunction[T]:
             self.output_rules[name] = func
             return func
@@ -219,10 +224,12 @@ def peel_nullable(type_: ReturnType) -> tuple[ReturnType, bool]:
 class Grance:
     def __init__(
         self,
-        field_name_converter: Callable[[str], str]
-        | None = pydantic.alias_generators.to_camel,
-        arg_name_converter: Callable[[str], str]
-        | None = pydantic.alias_generators.to_snake,
+        field_name_converter: (
+            Callable[[str], str] | None
+        ) = pydantic.alias_generators.to_camel,
+        arg_name_converter: (
+            Callable[[str], str] | None
+        ) = pydantic.alias_generators.to_snake,
     ) -> None:
         self.field_name_converter: Callable[[str], str] = (
             field_name_converter if field_name_converter is not None else lambda x: x
@@ -281,7 +288,10 @@ class Grance:
     def mutation[
         **P,
         R,
-    ](self, name: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    ](
+        self,
+        name: str,
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def _mutation(func: Callable[P, R]) -> Callable[P, R]:
             def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
                 return func(*args, **kwargs)
@@ -293,7 +303,10 @@ class Grance:
     def subscription[
         **P,
         R,
-    ](self, name: str) -> Callable[[Callable[P, R]], Callable[P, R]]:
+    ](
+        self,
+        name: str,
+    ) -> Callable[[Callable[P, R]], Callable[P, R]]:
         def _subscription(func: Callable[P, R]) -> Callable[P, R]:
             def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
                 return func(*args, **kwargs)

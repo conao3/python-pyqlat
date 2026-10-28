@@ -3,7 +3,6 @@ from __future__ import annotations
 import fastapi.testclient
 import grance
 
-
 grance_app = grance.Grance()
 fastapi_app = fastapi.FastAPI()
 

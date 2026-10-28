@@ -15,7 +15,6 @@ from graphql import GraphQLObjectType
 from graphql import GraphQLSchema
 from graphql import GraphQLString
 
-
 luke = {
     "id": "1000",
     "name": "Luke Skywalker",

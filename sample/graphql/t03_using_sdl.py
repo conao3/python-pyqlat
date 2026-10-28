@@ -69,7 +69,6 @@ class Root:
 
 from graphql import graphql_sync
 
-
 if __name__ == "__main__":
     # enum Episode {
     #   NEWHOPE

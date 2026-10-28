@@ -4,7 +4,6 @@ import grance
 import graphql
 import pydantic
 
-
 app = grance.Grance()
 
 
