@@ -6,7 +6,6 @@ from graphql import parse
 
 from .t02_building_type_schema import schema
 
-
 schema = extend_schema(
     schema,
     parse(

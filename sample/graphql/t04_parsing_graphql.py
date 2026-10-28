@@ -3,7 +3,6 @@ from __future__ import annotations
 import graphql  # type: ignore
 from graphql import parse
 
-
 if __name__ == "__main__":
     document = parse(
         """\

@@ -60,14 +60,11 @@ const nextConfig = {
 }
 
 import mdx from '@next/mdx';
-import remarkPrism from 'remark-prism';
-import remarkGfm from 'remark-gfm';
-
 const withMDX = mdx({
   options: {
     remarkPlugins: [
-      remarkGfm,
-      [remarkPrism, {plugins: [
+      "remark-gfm",
+      ["remark-prism", {plugins: [
         'autolinker',
         'command-line',
         'data-uri-highlight',
@@ -76,7 +73,7 @@ const withMDX = mdx({
         'keep-markup',
         'line-numbers',
         'show-invisibles',
-        'treeview',
+        "treeview",
       ]}],
     ],
     rehypePlugins: [],

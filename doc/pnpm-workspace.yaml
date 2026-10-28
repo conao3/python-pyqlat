@@ -1,0 +1,6 @@
+overrides:
+  "@tootallnate/once": ^2.0.1
+  postcss: ^8.5.12
+
+allowBuilds:
+  unrs-resolver: true
